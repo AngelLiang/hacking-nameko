@@ -226,6 +226,7 @@ class EventHandler(Consumer):
     def setup(self):
         _log.debug('starting %s', self)
 
+        # 创建队列名称
         # handler_type determines queue name and exclusive flag
         exclusive = False
         service_name = self.container.service_name
@@ -245,6 +246,7 @@ class EventHandler(Consumer):
                                                       self.method_name,
                                                       broadcast_identifier)
 
+        # 获取 event exchange
         exchange = get_event_exchange(self.source_service)
 
         # queues for handlers without reliable delivery should be marked as

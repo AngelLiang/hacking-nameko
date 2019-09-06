@@ -127,6 +127,7 @@ class RpcConsumer(SharedExtension, ProviderCollector):
             raise MethodNotFound(method_name)
 
     def handle_message(self, body, message):
+        """处理消息"""
         routing_key = message.delivery_info['routing_key']
         try:
             provider = self.get_provider_for_method(routing_key)
@@ -166,6 +167,7 @@ class Rpc(Entrypoint):
         self.rpc_consumer.unregister_provider(self)
 
     def handle_message(self, body, message):
+        """处理消息"""
         try:
             args = body['args']
             kwargs = body['kwargs']
@@ -203,6 +205,7 @@ class Rpc(Entrypoint):
         self.container.spawn_managed_thread(spawn_worker, identifier=ident)
 
     def handle_result(self, message, worker_ctx, result, exc_info):
+        """处理结果"""
         result, exc_info = self.rpc_consumer.handle_result(
             message, result, exc_info)
         return result, exc_info

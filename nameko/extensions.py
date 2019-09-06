@@ -299,7 +299,7 @@ class Entrypoint(Extension):
 
         def registering_decorator(fn, args, kwargs):
             instance = cls(*args, **kwargs)
-            register_entrypoint(fn, instance)
+            register_entrypoint(fn, instance)  # register_entrypoint
             return fn
 
         if len(args) == 1 and isinstance(args[0], types.FunctionType):
