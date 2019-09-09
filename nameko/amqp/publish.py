@@ -167,20 +167,25 @@ class Publisher(object):
     def publish(self, payload, **kwargs):
         """ Publish a message.
 
-        :param payload: 负荷
+        :param payload: any, Message body.
         :param headers:
         :param extra_headers:
         :param use_confirms:
         :param transport_options:
         :param delivery_mode:
-        :param mandatory:
-        :param priority:
+        :param mandatory: bool, Currently not supported.
+        :param priority: int, Message priority. A number between 0 and 9.
         :param expiration:
         :param serializer:
         :param compression:
-        :param retry:
-        :param retry_policy:
-        :param declare:
+        :param retry: bool, Retry publishing, or declaring entities if the
+                connection is lost.
+        :param retry_policy: dict, Retry configuration, this is the keywords
+                supported by :meth:`~kombu.Connection.ensure`.
+        :param declare: (Sequence[EntityT]), Optional list of required entities
+                that must have been declared before publishing the message.
+                The entities will be declared using
+                :func:`~kombu.common.maybe_declare`.
         """
         publish_kwargs = self.publish_kwargs.copy()
 
@@ -216,6 +221,7 @@ class Publisher(object):
                           transport_options,
                           ) as producer:
             try:
+                # http://docs.celeryproject.org/projects/kombu/en/latest/_modules/kombu/messaging.html#Producer.publish
                 producer.publish(
                     payload,
                     headers=headers,
