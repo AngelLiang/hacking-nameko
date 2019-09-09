@@ -28,6 +28,12 @@ def get_connection(amqp_uri, ssl=None, transport_options=None):
 
 @contextmanager
 def get_producer(amqp_uri, confirms=True, ssl=None, transport_options=None):
+    """
+    :param amqp_uri:
+    :param confirms:
+    :param ssl:
+    :param transport_options:
+    """
     if transport_options is None:
         transport_options = DEFAULT_TRANSPORT_OPTIONS.copy()
     transport_options['confirm_publish'] = confirms
@@ -160,6 +166,21 @@ class Publisher(object):
 
     def publish(self, payload, **kwargs):
         """ Publish a message.
+
+        :param payload: 负荷
+        :param headers:
+        :param extra_headers:
+        :param use_confirms:
+        :param transport_options:
+        :param delivery_mode:
+        :param mandatory:
+        :param priority:
+        :param expiration:
+        :param serializer:
+        :param compression:
+        :param retry:
+        :param retry_policy:
+        :param declare:
         """
         publish_kwargs = self.publish_kwargs.copy()
 
