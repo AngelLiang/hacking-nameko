@@ -1,3 +1,4 @@
+"""扩展"""
 from __future__ import absolute_import
 
 import inspect
@@ -44,6 +45,8 @@ class Extension(object):
         """ Called on bound Extensions before the container starts.
 
         Extensions should do any required initialisation here.
+
+        在容器启动之前调用绑定的扩展
         """
 
     def start(self):
@@ -53,6 +56,8 @@ class Extension(object):
         This is only called after all other Extensions have successfully
         returned from :meth:`Extension.setup`. If the Extension reacts
         to external events, it should now start acting upon them.
+
+        当容器成功开始时调用绑定的扩展
         """
 
     def stop(self):
@@ -132,6 +137,7 @@ class SharedExtension(Extension):
 
 
 class DependencyProvider(Extension):
+    """依赖提供者"""
 
     attr_name = None
 
@@ -151,6 +157,8 @@ class DependencyProvider(Extension):
 
     def worker_result(self, worker_ctx, result=None, exc_info=None):
         """ Called with the result of a service worker execution.
+
+        当service worker执行时调用结果。
 
         Dependencies that need to process the result should do it here.
         This method is called for all `Dependency` instances on completion
@@ -252,6 +260,7 @@ def register_entrypoint(fn, entrypoint):
 
 
 class Entrypoint(Extension):
+    """入口点"""
 
     method_name = None
 

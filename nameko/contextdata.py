@@ -13,6 +13,7 @@ class ContextDataProvider(DependencyProvider):
 
 
 class Language(ContextDataProvider):
+    """ worker_ctx.data.get('language') """
     context_key = LANGUAGE_CONTEXT_KEY
 
 
@@ -25,4 +26,5 @@ class UserAgent(ContextDataProvider):
 
 
 class AuthToken(ContextDataProvider):
+    """ worker_ctx.data.get('auth_token') """
     context_key = AUTH_TOKEN_CONTEXT_KEY

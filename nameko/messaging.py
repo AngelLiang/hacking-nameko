@@ -1,5 +1,12 @@
 '''
 Provides core messaging decorators and dependency providers.
+
+提供核心消息装饰器和依赖提供者
+
+- :class:`Publisher`
+- :class:`Consumer`
+- `decorator`:`comsume`
+
 '''
 from __future__ import absolute_import
 
@@ -41,6 +48,9 @@ def decode_from_headers(headers, prefix=HEADER_PREFIX):
 
 
 class Publisher(DependencyProvider):
+    """
+    Extension -> DependencyProvider -> Publisher
+    """
 
     publisher_cls = PublisherCore
 
@@ -116,6 +126,9 @@ class Publisher(DependencyProvider):
     def get_dependency(self, worker_ctx):
 
         def publish(msg, **kwargs):
+            """
+            :pararm msg: payload
+            """
             extra_headers = encode_to_headers(worker_ctx.context_data)
             self.publisher.publish(
                 msg, extra_headers=extra_headers, **kwargs
@@ -125,6 +138,9 @@ class Publisher(DependencyProvider):
 
 
 class Consumer(Entrypoint):
+    """
+    Extension -> Entrypoint -> Consumer
+    """
 
     consumer_cls = ConsumerCore
 
@@ -174,9 +190,11 @@ class Consumer(Entrypoint):
     def setup(self):
         ssl = config.get(AMQP_SSL_CONFIG_KEY)
 
+        # 心跳
         heartbeat = self.consumer_options.pop(
             'heartbeat', config.get(HEARTBEAT_CONFIG_KEY, DEFAULT_HEARTBEAT)
         )
+        # 预获取数量
         prefetch_count = self.consumer_options.pop(
             'prefetch_count', config.get(
                 PREFETCH_COUNT_CONFIG_KEY, DEFAULT_PREFETCH_COUNT
@@ -186,8 +204,8 @@ class Consumer(Entrypoint):
             'accept', serialization.setup().accept
         )
 
-        queues = [self.queue]
-        callbacks = [self.handle_message]
+        queues = [self.queue]  # 配置队列
+        callbacks = [self.handle_message]  # 配置处理消息回调
 
         self.consumer = self.consumer_cls(
             self.amqp_uri, ssl=ssl, queues=queues, callbacks=callbacks,
@@ -203,6 +221,12 @@ class Consumer(Entrypoint):
         self.consumer.stop()
 
     def handle_message(self, body, message):
+        """处理消息
+        :param body: paylaod
+        :param meesage:
+
+        routing_key = message.delivery_info.get('routing_key')
+        """
         args = (body,)
         kwargs = {}
 
@@ -220,8 +244,8 @@ class Consumer(Entrypoint):
             except ContainerBeingKilled:
                 self.consumer.requeue_message(message)
 
-        service_name = self.container.service_name
-        method_name = self.method_name
+        service_name = self.container.service_name  # 服务名称
+        method_name = self.method_name  # 方法名称
 
         # we must spawn a thread here to prevent handle_message blocking
         # when the worker pool is exhausted; if this happens the AMQP consumer

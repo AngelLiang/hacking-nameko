@@ -120,6 +120,7 @@ class WorkerContext(object):
 
 
 class ServiceContainer(object):
+    """服务容器"""
 
     def __init__(self, service_cls):
 
@@ -133,9 +134,9 @@ class ServiceContainer(object):
 
         self.serializer, self.accept = serialization.setup()
 
-        self.entrypoints = SpawningSet()
-        self.dependencies = SpawningSet()
-        self.subextensions = SpawningSet()
+        self.entrypoints = SpawningSet()  # 入口点
+        self.dependencies = SpawningSet()  # 依赖
+        self.subextensions = SpawningSet()  # 子扩展
 
         for attr_name, dependency in inspect.getmembers(service_cls,
                                                         is_dependency):
@@ -325,6 +326,10 @@ class ServiceContainer(object):
         or error raised by the service method. If provided it must return a
         value for ``result`` and ``exc_info`` to propagate to dependencies;
         these may be different to those returned by the service method.
+
+            handle_result 是一个可选函数，可能由通过 entrypoint 传入。
+            它在返回结果或抛出错误的时候调用，通过服务方法。
+
         """
 
         if self._being_killed:
