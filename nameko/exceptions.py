@@ -7,10 +7,12 @@ import six
 
 
 class ExtensionNotFound(AttributeError):
+    """找不到扩展"""
     pass
 
 
 class RpcTimeout(Exception):
+    """超时"""
     pass
 
 
@@ -101,6 +103,8 @@ def deserialize(data):
     ``deserializable``, return an instance of that exception type.
     Otherwise, return a `RemoteError` instance describing the exception
     that occurred.
+
+    如果 `exc_path` 值匹配了一个已经注册的异常，返回一个异常类型的实例。
     """
     key = data.get('exc_path')
     if key in registry:
